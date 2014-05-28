@@ -1,32 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.ServiceModel.Web;
-using System.Text;
+using System.ServiceModel.Activation;
+using Movies.DataAccess;
+using Movies.Interfaces;
+using Movies.Models;
+using Movies.Utils;
 
 namespace Movies
 {
-	// NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Service1" in code, svc and config file together.
-	public class Service1 : IMoviesService
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
+	public class MoviesService : IMoviesService
 	{
-		public string GetData(int value)
-		{
-			return string.Format("You entered: {0}", value);
-		}
+        private IMoviesDataAccess _dataAccess;
+        public MoviesService() 
+        {
+            _dataAccess = new MoviesDataAccess(MovieCache.Instance, new MoviesDataSourceAdapter(), new Logger());
+        }
 
-		public CompositeType GetDataUsingDataContract(CompositeType composite)
-		{
-			if (composite == null)
-			{
-				throw new ArgumentNullException("composite");
-			}
-			if (composite.BoolValue)
-			{
-				composite.StringValue += "Suffix";
-			}
-			return composite;
-		}
-	}
+        public DataContracts.Movie[] GetList(string field, string direction)
+        {
+            SortDirection sortDirection;
+            if (Enum.TryParse<SortDirection>(direction, true, out sortDirection)) 
+            {
+               return  _dataAccess.GetAllMovies(field, sortDirection);
+            }
+            return _dataAccess.GetAllMovies();
+        }
+
+        public DataContracts.Movie[] Search(string field, string expression)
+        {
+            return _dataAccess.SearchMovies(field, expression);
+        }
+
+        public void UpdateMovie(DataContracts.Movie movie)
+        {
+            _dataAccess.AddMovie(movie);
+        }
+
+        public void AddMovie(DataContracts.Movie movie)
+        {
+            _dataAccess.UpdateMovie(movie);
+        }
+
+        public DataContracts.Movie GetMovie(string id) 
+        {
+            int movieId;
+            if (!int.TryParse(id, out movieId))
+            {
+                return null;
+            }
+            return _dataAccess.GetMovieById(movieId);
+        }
+    }
 }

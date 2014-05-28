@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Movies.DataContracts;
+﻿using Movies.DataContracts;
+using Movies.Models;
 
 namespace Movies.Interfaces
 {
 	interface IMoviesDataAccess
 	{
-		Movie[] GetAllMovies(SortDescription sort);
-		Movie[] SearchMovies(SortDescription sort);
+		Movie[] GetAllMovies(string field = "", SortDirection? direction = null);
+        Movie[] SearchMovies(string field, string expression);
 		void AddMovie(Movie movie);
 		void UpdateMovie(Movie movie);
+        Movie GetMovieById(int id);
 	}
 }

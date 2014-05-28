@@ -33,7 +33,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\..\libs\log4net\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MoviesLibrary">
+      <HintPath>..\..\libs\MoviesDataSource\MoviesLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -63,12 +69,22 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataAccess\MoviesDataSourceAdapter.cs" />
+    <Compile Include="DataAccess\MovieCache.cs" />
+    <Compile Include="DataAccess\MoviesDataAccess.cs" />
     <Compile Include="DataContracts\Movie.cs" />
+    <Compile Include="Interfaces\IDataSourceAdapter.cs" />
+    <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Interfaces\IMovieCache.cs" />
+    <Compile Include="Interfaces\IMoviesDataAccess.cs" />
+    <Compile Include="Models\SortDirection.cs" />
+    <Compile Include="Models\MovieComparer.cs" />
     <Compile Include="MoviesService.svc.cs">
       <DependentUpon>MoviesService.svc</DependentUpon>
     </Compile>
     <Compile Include="IMoviesService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\Logger.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -80,8 +96,8 @@
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>53096</DevelopmentServerPort>
+          <AutoAssignPort>False</AutoAssignPort>
+          <DevelopmentServerPort>2323</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
