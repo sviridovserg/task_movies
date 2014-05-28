@@ -1,51 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using MoviesLibrary;
 
 namespace Movies.DataContracts
 {
-	[DataContract]
-	public class Movie
-	{
-        public Movie() { }
+    [DataContract]
+    public class Movie
+    {
+        public Movie()
+        {
+        }
+
         public Movie(MovieData data)
         {
-            this.Id = data.MovieId;
-            this.Title = data.Title;
-            this.Rating = data.Rating;
-            this.ReleaseYear = data.ReleaseDate;
-            this.Classification = data.Classification;
-            this.Genre = data.Genre;
-            this.Cast = new string[data.Cast.Length];
-            data.Cast.CopyTo(this.Cast, 0);
+            Id = data.MovieId;
+            Title = data.Title;
+            Rating = data.Rating;
+            ReleaseYear = data.ReleaseDate;
+            Classification = data.Classification;
+            Genre = data.Genre;
+            if (data.Cast != null)
+            {
+                Cast = new string[data.Cast.Length];
+                data.Cast.CopyTo(Cast, 0);
+            }
+            else
+            {
+                Cast = new string[0];
+            }
         }
 
         [DataMember]
         public int Id { get; set; }
+
         [DataMember]
         public string Title { get; set; }
+
         [DataMember]
         public int ReleaseYear { get; set; }
+
         [DataMember]
         public string Genre { get; set; }
+
         [DataMember]
         public int Rating { get; set; }
+
         [DataMember]
         public string Classification { get; set; }
+
         [DataMember]
         public string[] Cast { get; set; }
 
-        static public implicit operator Movie(MovieData data) 
+        public static implicit operator Movie(MovieData data)
         {
             return new Movie(data);
         }
 
-        static public explicit operator MovieData(Movie movie) 
+        public static explicit operator MovieData(Movie movie)
         {
-            MovieData data = new MovieData();
+            var data = new MovieData();
             data.MovieId = movie.Id;
             data.Title = movie.Title;
             data.Rating = movie.Rating;
@@ -56,5 +68,5 @@ namespace Movies.DataContracts
             movie.Cast.CopyTo(data.Cast, 0);
             return data;
         }
-	}
+    }
 }

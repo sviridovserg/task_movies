@@ -1,12 +1,13 @@
 ﻿using System;
-using log4net;
 using Movies.Interfaces;
+using log4net;
 
 namespace Movies.Utils
 {
-    public class Logger: ILogger
+    public class Logger : ILogger
     {
-        private ILog _log;
+        private readonly ILog _log;
+
         public Logger(string name = "MoviesService")
         {
             _log = LogManager.GetLogger(name ?? "");

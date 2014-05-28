@@ -6,8 +6,8 @@ namespace Movies.Interfaces
     public interface IDataSourceAdapter
     {
         void Create(Movie movie);
-        List<Movie> GetAllData();
-        Movie GetDataById(int id);
+        List<Movie> GetAllMovies();
+        Movie GetMovieById(int id);
         void Update(Movie movie);
     }
 }

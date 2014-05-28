@@ -1,33 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Movies.DataContracts;
 
 namespace Movies.Models
 {
-    public class MovieComparer: IComparer<Movie>
+    public sealed class MovieComparer : IComparer<Movie>
     {
-        private string _field;
-        private SortDirection _direction;
+        private readonly SortDirection _direction;
+        private readonly PropertyInfo _propertyToCompare;
 
         public MovieComparer(string field, SortDirection direction)
         {
-            _field = field;
+            _propertyToCompare = (typeof(Movie)).GetProperty(field);
+#warning _propertyToCompare can be null
             _direction = direction;
         }
 
         public int Compare(Movie x, Movie y)
         {
-            IComparable xValue = (typeof(Movie)).GetProperty(_field).GetValue(x, new object[] { }) as IComparable;
-            IComparable yValue = (typeof(Movie)).GetProperty(_field).GetValue(y, new object[] { }) as IComparable;
+            var xValue = GetComparablePropertyValue(x);
+            var yValue = GetComparablePropertyValue(y);
 
-            if (_direction == SortDirection.Asc)
-            {
-                return xValue.CompareTo(yValue);
-            }
-            else
-            {
-                return yValue.CompareTo(xValue);
-            }
+            return _direction == SortDirection.Asc ? xValue.CompareTo(yValue) : yValue.CompareTo(xValue);
+        }
+
+        private IComparable GetComparablePropertyValue(Movie obj)
+        {
+            return _propertyToCompare.GetValue(obj, new object[] { }) as IComparable;
         }
     }
 }
