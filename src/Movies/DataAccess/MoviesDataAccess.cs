@@ -126,14 +126,13 @@ namespace Movies.DataAccess
                            }
                            else if (propertyDescriptor.PropertyType == typeof (string))
                            {
-#warning насколько я знаю, алгоритм сравнения строк ToUpper чуток эффективнее
-                               return propertyValue.ToString().ToLower().Contains(expression.ToLower());
+							   return propertyValue.ToString().ToUpper().Contains(expression.ToUpper());
                            }
                            else if (propertyDescriptor.PropertyType == typeof (string[]))
                            {
                                var arrayVal = propertyValue as string[];
 #warning arrayVal can be null
-                               return arrayVal.FirstOrDefault(s => s.ToLower().Contains(expression.ToLower())) != null;
+							   return arrayVal.FirstOrDefault(s => s.ToUpper().Contains(expression.ToUpper())) != null;
                            }
                            return false;
                        };

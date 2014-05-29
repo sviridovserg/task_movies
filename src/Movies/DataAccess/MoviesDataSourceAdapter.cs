@@ -28,9 +28,7 @@ namespace Movies.DataAccess
             {
                 return new List<Movie>();
             }
-#warning почему бы не сделать так, тогда не надо создавать converter ?
             return result.Select(x => (Movie) x).ToList();
-            return result.ConvertAll(new Converter<MovieData, Movie>(data => data)).ToList();
         }
 
         public Movie GetMovieById(int id)
