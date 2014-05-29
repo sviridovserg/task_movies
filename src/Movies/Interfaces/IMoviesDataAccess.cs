@@ -1,12 +1,13 @@
 ﻿using Movies.DataContracts;
 using Movies.Models;
+using System.Collections.Generic;
 
 namespace Movies.Interfaces
 {
     internal interface IMoviesDataAccess
     {
-        Movie[] GetAllMovies(string field = "", SortDirection? direction = null);
-        Movie[] SearchMovies(string field, string expression);
+        IEnumerable<Movie> GetAllMovies(string field = "", SortDirection? direction = null);
+        IEnumerable<Movie> SearchMovies(string field, string expression);
         void AddMovie(Movie movie);
         void UpdateMovie(Movie movie);
         Movie GetMovieById(int id);

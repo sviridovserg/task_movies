@@ -19,21 +19,21 @@ namespace Movies.DataAccess
             _cache = cache;
             _dataSource = dataSource;
             _logger = logger;
+            _cache.PutMovies(_dataSource.GetAllMovies());
         }
 
-        public Movie[] GetAllMovies(string field = "", SortDirection? sortDirection = null)
+        public IEnumerable<Movie> GetAllMovies(string field = "", SortDirection? sortDirection = null)
         {
             List<Movie> result = GetMovies();
             if (!string.IsNullOrEmpty(field) && sortDirection.HasValue)
             {
                 result.Sort(new MovieComparer(field, sortDirection.Value));
             }
-            return result.ToArray();
+            return result;
         }
-#warning почему не возвращаешь IList<Movie> ?
-        public Movie[] SearchMovies(string field, string expression)
+        public IEnumerable<Movie> SearchMovies(string field, string expression)
         {
-            return GetMovies().Where(GetSearchPredicate(field, expression)).ToArray();
+            return GetMovies().Where(GetSearchPredicate(field, expression));
         }
 
         public void AddMovie(Movie movie)
@@ -87,7 +87,7 @@ namespace Movies.DataAccess
             List<Movie> result = null;
             try
             {
-                if (_cache.IsEmpty)
+                if (_cache.IsInitialized)
                 {
                     result = _dataSource.GetAllMovies();
                     _cache.PutMovies(result);
@@ -112,6 +112,10 @@ namespace Movies.DataAccess
 			}
             Type movieType = typeof (Movie);
             PropertyInfo propertyDescriptor = movieType.GetProperty(field);
+            if (propertyDescriptor == null) 
+            {
+                return m => true;
+            }
             return m =>
                        {
                            object propertyValue = propertyDescriptor.GetValue(m, new object[] {});

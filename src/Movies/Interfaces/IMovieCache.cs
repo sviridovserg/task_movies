@@ -5,7 +5,7 @@ namespace Movies.Interfaces
 {
     public interface IMovieCache
     {
-        bool IsEmpty { get; }
+        bool IsInitialized { get; }
         IEnumerable<Movie> GetMovies();
         void PutMovies(IEnumerable<Movie> list);
         void AddMovie(Movie movie);

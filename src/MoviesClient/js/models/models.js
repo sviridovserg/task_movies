@@ -1,0 +1,2 @@
+﻿var movies = {};
+movies.models = {};

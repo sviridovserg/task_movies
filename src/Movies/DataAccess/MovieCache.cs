@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Caching;
 using Movies.DataContracts;
 using Movies.Interfaces;
+using System.ServiceModel;
+using Movies.DataContracts.FaultContracts;
 
 namespace Movies.DataAccess
 {
@@ -12,7 +14,6 @@ namespace Movies.DataAccess
     {
         private static readonly string _cacheKey = "$movies";
 
-#warning HttpContext.Current can be null (!) I suggest you inject or bypass it somehow
         private static readonly MovieCache _instance = new MovieCache(HttpContext.Current.Cache);
 
         private readonly System.Web.Caching.Cache _cache;
@@ -32,17 +33,15 @@ namespace Movies.DataAccess
         }
 
 
-        public bool IsEmpty
+        public bool IsInitialized
         {
             get { return _cache[_cacheKey] == null; }
         }
 
         public IEnumerable<Movie> GetMovies()
         {
-            if (IsEmpty)
-            {
-                return new List<Movie>();
-            }
+            CheckInitialized("");
+            
             return _cache[_cacheKey] as List<Movie>;
         }
 
@@ -50,6 +49,10 @@ namespace Movies.DataAccess
         {
             lock (_syncObject)
             {
+                foreach (Movie m in list) 
+                {
+                    m.CacheId = this.GetElementId();
+                }
                 _cache[_cacheKey] = new List<Movie>(list);
             }
         }
@@ -58,11 +61,9 @@ namespace Movies.DataAccess
         {
             lock (_syncObject)
             {
-                if (IsEmpty)
-                {
-                    PutMovies(new[] {movie});
-                    return;
-                }
+                CheckInitialized("Add operation failed. ");
+                
+                movie.CacheId = this.GetElementId();
                 List<Movie> movies = GetMovies().ToList();
                 movies.Add(movie);
                 PutMovies(movies);
@@ -73,12 +74,10 @@ namespace Movies.DataAccess
         {
             lock (_syncObject)
             {
-                if (IsEmpty)
-                {
-                    throw new InvalidOperationException("Update operation on empty cache cannot be performed.");
-                }
+                CheckInitialized("Update operation failed. ");
+                
                 IEnumerable<Movie> movies = GetMovies();
-                Movie cachedMovie = movies.First(m => m.Id == movie.Id);
+                Movie cachedMovie = movies.First(m => m.CacheId == movie.CacheId);
 
                 cachedMovie.Genre = movie.Genre;
                 cachedMovie.Title = movie.Title;
@@ -93,11 +92,21 @@ namespace Movies.DataAccess
 
         public Movie GetMovieById(int id)
         {
-            if (IsEmpty)
-            {
-                return null;
-            }
+            CheckInitialized("GetMovieById operation failed. ");
+            
             return GetMovies().FirstOrDefault(m => m.Id == id);
+        }
+
+        private void CheckInitialized(string operation) 
+        {
+            if (IsInitialized)
+            {
+                throw new FaultException<InitializationFault>(new InitializationFault(operation + "Cache is not initialized"));
+            }
+        }
+
+        private string GetElementId() {
+            return Guid.NewGuid().ToString();
         }
     }
 }

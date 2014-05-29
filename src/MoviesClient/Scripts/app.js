@@ -1,1 +1,0 @@
-﻿var moviesModule = angular.module('movies', ['movies.controllers', 'movies.services','bootstrap']);

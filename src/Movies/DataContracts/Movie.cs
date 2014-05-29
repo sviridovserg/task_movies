@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using System.Linq;
 using MoviesLibrary;
 
 namespace Movies.DataContracts
@@ -30,6 +31,8 @@ namespace Movies.DataContracts
         }
 
         [DataMember]
+        public string CacheId { get; set; }
+        [DataMember]
         public int Id { get; set; }
 
         [DataMember]
@@ -49,6 +52,32 @@ namespace Movies.DataContracts
 
         [DataMember]
         public string[] Cast { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as Movie);
+        }
+
+        public bool Equals(Movie obj) 
+        {
+            if (obj == null) 
+            {
+                return false;
+            }
+            if (this.Cast.Length != obj.Cast.Length) 
+            {
+                return false;
+            }
+            foreach (string c in this.Cast) 
+            {
+                if (!obj.Cast.Contains(c)) 
+                {
+                    return false;
+                }
+            }
+            return this.Id == obj.Id && this.Title == obj.Title && this.ReleaseYear == obj.ReleaseYear && this.Genre == obj.Genre && this.Rating == obj.Rating &&
+                this.Classification == obj.Classification;
+        }
 
         public static implicit operator Movie(MovieData data)
         {
