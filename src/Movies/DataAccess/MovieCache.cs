@@ -2,89 +2,83 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Movies.Interfaces;
+using System.Web.Caching;
 using Movies.DataContracts;
+using Movies.Interfaces;
 
 namespace Movies.DataAccess
 {
-    public class MovieCache: IMovieCache
+    public sealed class MovieCache : IMovieCache
     {
-        private static string _cacheKey = "$movies";
-        private static object _lockInstance = new object();
-        private static MovieCache _instance;
+        private static readonly string _cacheKey = "$movies";
+
+#warning HttpContext.Current can be null (!) I suggest you inject or bypass it somehow
+        private static readonly MovieCache _instance = new MovieCache(HttpContext.Current.Cache);
+
+        private readonly System.Web.Caching.Cache _cache;
+        private readonly object _syncObject = new object();
+
+        private MovieCache(Cache cache)
+        {
+            _cache = cache;
+        }
 
         public static MovieCache Instance
         {
-            get 
+            get
             {
-                if (_instance == null) 
-                {
-                    lock (_lockInstance)
-                    {
-                        if (_instance == null)
-                        {
-                            _instance = new MovieCache();
-                        }
-                    }
-                }
                 return _instance;
             }
         }
 
-        private object _lockObj = new object();
 
-        private MovieCache() 
+        public bool IsEmpty
         {
-        }
-        
-        public bool IsEmpty 
-        {
-            get {
-                return HttpContext.Current.Cache[_cacheKey] == null;
-            }
+            get { return _cache[_cacheKey] == null; }
         }
 
         public IEnumerable<Movie> GetMovies()
         {
-            if (this.IsEmpty) {
+            if (IsEmpty)
+            {
                 return new List<Movie>();
             }
-            return HttpContext.Current.Cache[_cacheKey] as List<Movie>;
+            return _cache[_cacheKey] as List<Movie>;
         }
 
         public void PutMovies(IEnumerable<Movie> list)
         {
-            lock (_lockObj)
+            lock (_syncObject)
             {
-                HttpContext.Current.Cache[_cacheKey] = new List<Movie>(list);
+                _cache[_cacheKey] = new List<Movie>(list);
             }
         }
 
         public void AddMovie(Movie movie)
         {
-            lock (_lockObj)
+            lock (_syncObject)
             {
-                if (this.IsEmpty) 
+                if (IsEmpty)
                 {
-                    this.PutMovies(new Movie[] { movie });
+                    PutMovies(new[] {movie});
                     return;
                 }
-                var movies = this.GetMovies().ToList();
+                List<Movie> movies = GetMovies().ToList();
                 movies.Add(movie);
-                this.PutMovies(movies);
+                PutMovies(movies);
             }
         }
 
         public void UpdateMovie(Movie movie)
         {
-            lock (_lockObj)
+            lock (_syncObject)
             {
-                if (this.IsEmpty)
+                if (IsEmpty)
                 {
                     throw new InvalidOperationException("Update operation on empty cache cannot be performed.");
                 }
-                var movies = this.GetMovies();
-                var cachedMovie = movies.First(m => m.Id == movie.Id);
+                IEnumerable<Movie> movies = GetMovies();
+                Movie cachedMovie = movies.First(m => m.Id == movie.Id);
 
                 cachedMovie.Genre = movie.Genre;
                 cachedMovie.Title = movie.Title;
@@ -93,17 +87,17 @@ namespace Movies.DataAccess
                 cachedMovie.Classification = movie.Classification;
                 cachedMovie.Cast = new string[movie.Cast.Length];
                 movie.Cast.CopyTo(cachedMovie.Cast, 0);
-                this.PutMovies(movies);
+                PutMovies(movies);
             }
         }
 
         public Movie GetMovieById(int id)
         {
-            if (this.IsEmpty) 
+            if (IsEmpty)
             {
                 return null;
             }
-            return this.GetMovies().FirstOrDefault(m => m.Id == id);
+            return GetMovies().FirstOrDefault(m => m.Id == id);
         }
     }
 }

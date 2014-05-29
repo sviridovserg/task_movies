@@ -1,0 +1,6 @@
+src/_UpgradeReport_Files/*
+src/Backup/*
+src/Movies/bin/*
+src/Movies/obj/*
+src/UpgradeLog.htm
+src/UpgradeLog.XML

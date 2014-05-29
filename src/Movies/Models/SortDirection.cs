@@ -1,5 +1,4 @@
-﻿
-namespace Movies.Models
+﻿namespace Movies.Models
 {
     public enum SortDirection
     {
