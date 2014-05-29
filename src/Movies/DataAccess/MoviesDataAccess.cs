@@ -94,7 +94,8 @@ namespace Movies.DataAccess
             _cache.AddMovie(movie);
             try
             {
-                _dataSource.Create(movie);
+                int id = _dataSource.Create(movie);
+                movie.Id = id;
             }
             catch (Exception ex) 
             {

@@ -16,9 +16,9 @@ namespace Movies.DataAccess
             _dataSource = new MovieDataSource();
         }
 
-        public void Create(Movie movie)
+        public int Create(Movie movie)
         {
-            _dataSource.Create((MovieData)movie);
+            return _dataSource.Create((MovieData)movie);
         }
 
         public List<Movie> GetAllData()
