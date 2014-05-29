@@ -103,9 +103,12 @@ namespace Movies.DataAccess
             return result;
         }
 
-#warning - тут большая дыра, так как нет валидации expression. Хотя бы оберни это в try/catch и выкидывай наружу какое-то своё нормальное исключение
         private static Func<Movie, bool> GetSearchPredicate(string field, string expression)
         {
+			if (string.IsNullOrEmpty(field) || string.IsNullOrEmpty(expression))
+			{
+				return m => true;
+			}
             Type movieType = typeof (Movie);
             PropertyInfo propertyDescriptor = movieType.GetProperty(field);
             return m =>
@@ -131,7 +134,6 @@ namespace Movies.DataAccess
                            else if (propertyDescriptor.PropertyType == typeof (string[]))
                            {
                                var arrayVal = propertyValue as string[];
-#warning arrayVal can be null
 							   return arrayVal.FirstOrDefault(s => s.ToUpper().Contains(expression.ToUpper())) != null;
                            }
                            return false;
