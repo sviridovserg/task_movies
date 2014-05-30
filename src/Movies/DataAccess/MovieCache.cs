@@ -90,11 +90,11 @@ namespace Movies.DataAccess
             }
         }
 
-        public Movie GetMovieById(int id)
+        public Movie GetMovieById(string id)
         {
             CheckInitialized("GetMovieById operation failed. ");
             
-            return GetMovies().FirstOrDefault(m => m.Id == id);
+            return GetMovies().FirstOrDefault(m => m.CacheId == id);
         }
 
         private void CheckInitialized(string operation) 

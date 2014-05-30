@@ -39,7 +39,7 @@
             <tbody>
                 <tr ng-repeat="m in movies | orderBy:sortField:asc">
                     <td>{{m.id}}</td>
-                    <td>{{m.title}}</td>
+                    <td><a href="" ng-click="editMovie(m)">{{m.title}}</a></td>
                     <td>{{m.releaseYear}}</td>
                     <td>{{m.rating}}</td>
                     <td>{{m.genre}}</td>

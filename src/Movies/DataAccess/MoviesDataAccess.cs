@@ -46,7 +46,7 @@ namespace Movies.DataAccess
             _cache.UpdateMovie(movie);
         }
 
-        public Movie GetMovieById(int id)
+        public Movie GetMovieById(string id)
         {
             Movie result = _cache.GetMovieById(id);
             return result;

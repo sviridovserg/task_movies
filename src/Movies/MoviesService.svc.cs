@@ -72,12 +72,7 @@ namespace Movies
         [FaultContract(typeof(InitializationFault))]
         public Movie GetMovie(string id)
         {
-            int movieId;
-            if (!int.TryParse(id, out movieId))
-            {
-                return null;
-            }
-            return _dataAccess.GetMovieById(movieId);
+			return _dataAccess.GetMovieById(id);
         }
     }
 }

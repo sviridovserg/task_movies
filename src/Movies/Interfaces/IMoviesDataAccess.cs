@@ -10,6 +10,6 @@ namespace Movies.Interfaces
         IEnumerable<Movie> SearchMovies(string field, string expression);
         void AddMovie(Movie movie);
         void UpdateMovie(Movie movie);
-        Movie GetMovieById(int id);
+        Movie GetMovieById(string id);
     }
 }
