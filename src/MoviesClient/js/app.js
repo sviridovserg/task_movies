@@ -1,4 +1,4 @@
-﻿var moviesModule = angular.module('movies', ['ngRoute', 'movies.controllers', 'movies.services'])
+﻿var moviesModule = angular.module('movies', ['ngRoute', 'movies.controllers', 'movies.services', 'movies.directives'])
 
 .config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/default', { templateUrl: 'partials/default.html', controller: 'defaultPageController' });

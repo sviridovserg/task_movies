@@ -35,12 +35,12 @@ namespace Movies.DataAccess
 
         public bool IsInitialized
         {
-            get { return _cache[_cacheKey] == null; }
+            get { return _cache[_cacheKey] != null; }
         }
 
         public IEnumerable<Movie> GetMovies()
         {
-            CheckInitialized("");
+			CheckInitialized("GetMovies operation failed. ");
             
             return _cache[_cacheKey] as List<Movie>;
         }
@@ -99,7 +99,7 @@ namespace Movies.DataAccess
 
         private void CheckInitialized(string operation) 
         {
-            if (IsInitialized)
+            if (!IsInitialized)
             {
                 throw new FaultException<InitializationFault>(new InitializationFault(operation + "Cache is not initialized"));
             }

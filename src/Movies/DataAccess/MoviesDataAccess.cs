@@ -24,7 +24,7 @@ namespace Movies.DataAccess
 
         public IEnumerable<Movie> GetAllMovies(string field = "", SortDirection? sortDirection = null)
         {
-            List<Movie> result = GetMovies();
+            List<Movie> result = _cache.GetMovies().ToList();
             if (!string.IsNullOrEmpty(field) && sortDirection.HasValue)
             {
                 result.Sort(new MovieComparer(field, sortDirection.Value));
@@ -33,76 +33,25 @@ namespace Movies.DataAccess
         }
         public IEnumerable<Movie> SearchMovies(string field, string expression)
         {
-            return GetMovies().Where(GetSearchPredicate(field, expression));
+			return _cache.GetMovies().Where(GetSearchPredicate(field, expression));
         }
 
         public void AddMovie(Movie movie)
         {
-#warning same Moview might allready exist!
             _cache.AddMovie(movie);
-            try
-            {
-                int id = _dataSource.Create(movie);
-                movie.Id = id;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Faild to add movie to movies data source", ex);
-            }
         }
 
         public void UpdateMovie(Movie movie)
         {
-#warning cannot update moview without checking if it already had been updated or deleted!
             _cache.UpdateMovie(movie);
-            try
-            {
-                _dataSource.Update(movie);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Faild to update movie information in movies data source", ex);
-            }
         }
 
         public Movie GetMovieById(int id)
         {
             Movie result = _cache.GetMovieById(id);
-            if (result == null)
-            {
-                try
-                {
-                    result = _dataSource.GetMovieById(id);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Faild to get movie from movie data source", ex);
-                }
-            }
             return result;
         }
 
-        private List<Movie> GetMovies()
-        {
-            List<Movie> result = null;
-            try
-            {
-                if (_cache.IsInitialized)
-                {
-                    result = _dataSource.GetAllMovies();
-                    _cache.PutMovies(result);
-                }
-                else
-                {
-                    result = _cache.GetMovies().ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Faild to get movies", ex);
-            }
-            return result;
-        }
 
         private static Func<Movie, bool> GetSearchPredicate(string field, string expression)
         {

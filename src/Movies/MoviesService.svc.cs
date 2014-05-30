@@ -16,7 +16,6 @@ namespace Movies
 #warning you have to add FailureInfo class to get Exceptions accross Service boundary.
 #warning you have to specify what kind of exceptions your service can throw
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)] 
-    
     public class MoviesService : IMoviesService
     {
         private readonly int MERGE_TIMER = 30000;

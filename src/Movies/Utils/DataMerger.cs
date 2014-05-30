@@ -32,12 +32,13 @@ namespace Movies.Utils
 
                 foreach (var added in addedMovies) 
                 {
-                    _dataSource.Create(added);
+					added.Id=_dataSource.Create(added);
                 }
                 foreach (var updated in updatedMovies) 
                 {
                     _dataSource.Update(updated);
                 }
+				_cache.PutMovies(cachedMovies);
             }
             catch (Exception ex)
             {

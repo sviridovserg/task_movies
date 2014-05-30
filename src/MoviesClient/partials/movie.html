@@ -27,7 +27,7 @@
     <div class="control-group">
         <label for="inputYear" class="control-label">Year</label>
         <div class="controls" >
-            <select ng-model="newItem.year" id="inputYear" ng-options="y for y in getYears()">{{y}}</select>
+            <select required ng-model="newItem.year" id="inputYear" ng-options="y for y in getYears()">{{y}}</select>
         </div>
     </div>
     <div class="control-group">
@@ -37,7 +37,7 @@
                 <li ng-repeat="actor in newItem.cast">{{actor}}</li>
             </ul>
             <div class="input-append">
-              <input class="span2" id="appendedInput" type="text" placeholder='Actor' ng-model="actor">
+              <input class="span2" id="appendedInput" type="text" placeholder='Actor' ng-enter="addActor(actor)" ng-model="actor">
               <span class="add-on" style="cursor:pointer" ng-click="addActor(actor)"><i class="icon-arrow-up"></i></span>
             </div>
         </div>
@@ -45,7 +45,7 @@
     </fieldset>
    <div class="form-actions">
     <div style="float:right">
-      <button type="submit" class="btn btn-primary" ng-click="addNewMovie(newItem)">Save changes</button>
+      <button type="submit" class="btn btn-primary" ng-click="addNewMovie(newItem)" ng-disabled="newItemForm.$invalid">Save changes</button>
       <button type="button" class="btn" ng-click="cancel()">Cancel</button>
       </div>
     </div>
