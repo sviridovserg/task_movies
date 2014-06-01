@@ -4,6 +4,7 @@ services.factory('userService', function ($http, $location, cookieService) {
     var loggedInUser = null;
     var token = null;
     var onLoginCallbacks = [];
+    var onLoginFaliedCallbacks = [];
 
     function login(username, pwd) {
         $http.post('/service/AuthService.svc/json/auth', { Login: username, Password: pwd }).then(function (response) {
@@ -16,6 +17,11 @@ services.factory('userService', function ($http, $location, cookieService) {
             }
 
             setUser(response.data);
+        }, function(error) 
+        {
+            for (var i = 0; i < onLoginFaliedCallbacks.length; i++) {
+                onLoginFaliedCallbacks[i](error);
+            }
         });
     }
     
@@ -32,8 +38,6 @@ services.factory('userService', function ($http, $location, cookieService) {
         cookieService.setUser(loggedInUser);
 
         fireOnLogin();
-
-        $location.path('/movies');
     }
 
     function fireOnLogin() {
@@ -69,6 +73,13 @@ services.factory('userService', function ($http, $location, cookieService) {
                 return;
             }
             onLoginCallbacks.push(callback);
+        },
+        onLoginFailed: function(callback) 
+        {
+            if (callback === null || callback === undefined) {
+                return;
+            }
+            onLoginFaliedCallbacks.push(callback);
         },
         getToken: function () {
             return token;

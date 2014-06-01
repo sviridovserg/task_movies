@@ -10,6 +10,7 @@ controllers.controller('indexController', function ($scope, $location, userServi
 
     userService.onLogin(function () {
         $scope.loggedIn = userService.getLoggedInUser() != null;
+        $location.path('/movies');
     });
 
     $scope.isActive = function (viewLocation) {

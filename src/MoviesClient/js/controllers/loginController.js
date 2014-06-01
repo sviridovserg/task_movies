@@ -12,4 +12,8 @@ controllers.controller('loginController', function ($scope, userService, cookieS
         }
         userService.login(username, password);
     };
+
+    userService.onLoginFailed(function () {
+        toastr.error('Invalid username or password.', 'Login Error!')
+    });
 })

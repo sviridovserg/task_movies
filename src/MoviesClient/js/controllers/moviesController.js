@@ -13,7 +13,7 @@
 
 	$scope.fields = [
         { id: "id", value: "Id" },
-        { id: "id", value: "Title" },
+        { id: "title", value: "Title" },
         { id: "releaseYear", value: "Year" },
         { id: "rating", value: "Rating" },
         { id: "genre", value: "Genre" },
