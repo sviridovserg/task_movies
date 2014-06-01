@@ -27,8 +27,8 @@ namespace Movies.Utils
                 IList<Movie> dataSourceMovies = _dataSource.GetAllMovies();
                 IList<Movie> cachedMovies = _cache.GetMovies().ToList();
 
-                IEnumerable<Movie> addedMovies = cachedMovies.Where(m => m.Id == 0);
-                IEnumerable<Movie> updatedMovies = dataSourceMovies.Where(m => !cachedMovies.Contains(m));
+                IEnumerable<Movie> addedMovies = cachedMovies.Where(m => m.IsNew());
+                IEnumerable<Movie> updatedMovies = cachedMovies.Where(m => !m.IsNew() && !dataSourceMovies.Contains(m));
 
                 foreach (var added in addedMovies) 
                 {

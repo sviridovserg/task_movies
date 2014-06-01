@@ -53,6 +53,11 @@ namespace Movies.DataContracts
         [DataMember]
         public string[] Cast { get; set; }
 
+        public bool IsNew() 
+        {
+            return this.Id == 0;
+        }
+
         public override bool Equals(object obj)
         {
             return this.Equals(obj as Movie);
@@ -64,21 +69,7 @@ namespace Movies.DataContracts
             {
                 return false;
             }
-            if ((this.Cast == null || obj.Cast == null) && this.Cast != obj.Cast) 
-            {
-                return false;
-            }
-            if ((this.Cast == obj.Cast) || this.Cast.Length != obj.Cast.Length) 
-            {
-                return false;
-            }
-            foreach (string c in this.Cast) 
-            {
-                if (!obj.Cast.Contains(c)) 
-                {
-                    return false;
-                }
-            }
+            
             return this.Id == obj.Id && this.Title == obj.Title && this.ReleaseYear == obj.ReleaseYear && this.Genre == obj.Genre && this.Rating == obj.Rating &&
                 this.Classification == obj.Classification;
         }

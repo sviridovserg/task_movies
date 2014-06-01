@@ -90,7 +90,7 @@ namespace MoviesUnitTests
         }
 
         [TestMethod]
-        public void SearchNullorEmptyFieldReturnAll() 
+        public void SearchNullOrEmptyFieldReturnAll() 
         {
             _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
             CheckAllPredefined(_moviesDataAccess.SearchMovies(null, "a").ToList());
@@ -98,7 +98,7 @@ namespace MoviesUnitTests
         }
 
         [TestMethod]
-        public void SearchNullExpressionReturnAll()
+        public void SearchNullOrEmptyExpressionReturnAll()
         {
             _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
             CheckAllPredefined(_moviesDataAccess.SearchMovies("a", null).ToList());
