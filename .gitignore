@@ -4,3 +4,8 @@ src/Movies/bin/*
 src/Movies/obj/*
 src/UpgradeLog.htm
 src/UpgradeLog.XML
+/src/MoviesUnitTests/bin/Debug
+/src/MoviesUnitTests/obj/Debug
+/src/MoviesWebClient/bin
+/src/MoviesWebClient/obj/Debug
+/src/TestResults

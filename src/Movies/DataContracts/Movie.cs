@@ -64,7 +64,11 @@ namespace Movies.DataContracts
             {
                 return false;
             }
-            if (this.Cast.Length != obj.Cast.Length) 
+            if ((this.Cast == null || obj.Cast == null) && this.Cast != obj.Cast) 
+            {
+                return false;
+            }
+            if ((this.Cast == obj.Cast) || this.Cast.Length != obj.Cast.Length) 
             {
                 return false;
             }
@@ -77,6 +81,12 @@ namespace Movies.DataContracts
             }
             return this.Id == obj.Id && this.Title == obj.Title && this.ReleaseYear == obj.ReleaseYear && this.Genre == obj.Genre && this.Rating == obj.Rating &&
                 this.Classification == obj.Classification;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Id.GetHashCode() ^ this.Title.GetHashCode() ^ this.ReleaseYear.GetHashCode() ^ this.Genre.GetHashCode() ^ this.Rating.GetHashCode() ^
+                this.Classification.GetHashCode();
         }
 
         public static implicit operator Movie(MovieData data)
