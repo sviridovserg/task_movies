@@ -18,7 +18,7 @@ controllers.controller('indexController', function ($scope, $location, userServi
 
     $scope.logout = function () {
         userService.logout();
-        window.location.href = '/public/app/index.html';
+        window.location.href = 'index.htm';
 
     }
 });
