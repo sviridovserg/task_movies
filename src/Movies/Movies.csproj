@@ -59,7 +59,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AuthService.svc" />
     <Content Include="MoviesService.svc" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -70,9 +69,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthService.svc.cs">
-      <DependentUpon>AuthService.svc</DependentUpon>
-    </Compile>
     <Compile Include="DataAccess\MoviesDataSourceAdapter.cs" />
     <Compile Include="DataAccess\MovieCache.cs" />
     <Compile Include="DataAccess\MoviesDataAccess.cs" />
@@ -80,7 +76,6 @@
     <Compile Include="DataContracts\AuthResult.cs" />
     <Compile Include="DataContracts\FaultContracts\InitializationFault.cs" />
     <Compile Include="DataContracts\Movie.cs" />
-    <Compile Include="IAuthService.cs" />
     <Compile Include="Interfaces\IDataMerger.cs" />
     <Compile Include="Interfaces\IDataSourceAdapter.cs" />
     <Compile Include="Interfaces\ILogger.cs" />

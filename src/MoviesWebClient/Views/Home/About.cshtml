@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "About";
+}
+
+    <hgroup class="title">
+        <h1>About Classic Movies.</h1>
+    </hgroup>
+
+    <article>
+        <p>
+           Created by Sergey Sviridov
+        </p>
+
+        <p>
+            Powered by Microsoft ASp.Net Mvc with angular.js and WCF rest services
+        </p>
+
+        <p>
+           This solution is base on 3-Tire architecture. Client logic is implemented in APS.NET MVC applicaton and angularJS application. Bussiness logic is implemented as WCF service with caching and syncronization of changes with third party datasource.
+        </p>
+    </article>
+
+    <aside>
+        <h3>Aside Title</h3>
+        <p>
+            Use this area to provide additional information.
+        </p>
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li>@Html.ActionLink("About", "About", "Home")</li>
+            <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+        </ul>
+    </aside>

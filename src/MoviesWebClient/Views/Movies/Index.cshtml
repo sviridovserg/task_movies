@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "Movies";
+}
+
+@section scripts 
+{
+    @Scripts.Render("~/bundles/angular")
+
+    <script type="text/javascript" src="~/Scripts/toastr/toastr.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap/bootstrap.min.js"></script>
+
+    @Scripts.Render("~/bundles/app")
+}
+
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>Classic Movies Home</h1>
+            </hgroup>
+        </div>
+    </section>
+}
+
+<div ng-app="movies" >
+    <div ng-view>
+    </div>
+</div>

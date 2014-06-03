@@ -12,7 +12,7 @@ namespace MoviesWebClient.Controllers
         {
             //User.Identity.Name
             if (User.Identity.IsAuthenticated)
-                return RedirectToAction("Movies");
+                return RedirectToAction("Index", "Movies");
 
             return View();
         }

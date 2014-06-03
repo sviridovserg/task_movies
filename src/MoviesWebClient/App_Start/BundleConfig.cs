@@ -23,6 +23,24 @@ namespace MoviesWebClient
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
+            bundles.Add(new ScriptBundle("~/bundles/angular").Include(
+                "~/Scripts/angular/angular.js",
+                "~/Scripts/angular/angular-route.js",
+                "~/Scripts/angular/angular-animate.js"));
+
+            
+            bundles.Add(new ScriptBundle("~/bundles/app").Include(
+                "~/Scripts/app/models/models.js",
+                "~/Scripts/app/models/movieItem.js",
+                "~/Scripts/app/services/services.js",
+                "~/Scripts/app/services/moviesService.js",
+                "~/Scripts/app/directives/directives.js",
+                "~/Scripts/app/directives/ngEnter.js",
+                "~/Scripts/app/controllers/controllers.js",
+                "~/Scripts/app/controllers/movieController.js",
+                "~/Scripts/app/controllers/moviesController.js",
+                "~/Scripts/app/app.js"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css"));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
