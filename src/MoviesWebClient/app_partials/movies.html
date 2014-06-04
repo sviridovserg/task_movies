@@ -9,7 +9,7 @@
         <select   ng-model="searchField" ng-options="f.value for f in fields">
         </select>
         <input type="text" class="input-medium search-query"  ng-model="searchVal"/>
-        <button type="submit" class="btn btn-success" ng-click="search(searchField, searchVal)" ng-disabled="!searchField || !searchVal">Search</button>
+        <button type="submit" class="btn btn-info" ng-click="search(searchField, searchVal)" ng-disabled="!searchField || !searchVal">Search</button>
     </form>
     <div>
         <table class="table table-hover">

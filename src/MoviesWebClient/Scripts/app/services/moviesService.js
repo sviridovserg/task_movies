@@ -1,12 +1,14 @@
-﻿services.factory('moviesService', ['$http', '$q', function($http, $q) {
+﻿services.factory('moviesService', ['$http', '$q', function ($http, $q) {
 
     function getMovies(/*sortField, sortDirection*/) {
         var deferred = $q.defer();
         //var fieldParam = sortField == null || sortField == undefined ? "" : sortField;
         //var directionParam = sortDirection == null || sortDirection == undefined ? "" : sortDirection;
-        $http.get('/Movies/AllMovies/').success(function(response) {
-            deferred.resolve(parseItemsList(response));
-        });
+        $http.get('/Movies/AllMovies/').then(function (response) {
+            deferred.resolve(parseItemsList(response.data));
+        },function () {
+            deferred.reject();
+        }); ;
         return deferred.promise;
     }
 
@@ -15,32 +17,24 @@
         field = getServerField(field);
         var fieldParam = field == null || field == undefined ? "" : field;
         var expressionParam = expression == null || expression == undefined ? "" : expression;
-        $http.get('/Movies/Search?field=' + fieldParam + '&expression=' + expressionParam).success(function(response) {
+        $http.get('/Movies/Search?field=' + fieldParam + '&expression=' + expressionParam).success(function (response) {
             deferred.resolve(parseItemsList(response));
         });
         return deferred.promise;
     }
 
     function addMovie(movieItem, savedCallback) {
-        $http.post('/Movies/AddMovie', getServerItem(movieItem)).then(function(response) {
-            if (savedCallback) {
-                savedCallback();
-            }
-        });
+        return $http.post('/Movies/AddMovie', getServerItem(movieItem));
     }
 
-    function updateMovie(movieItem, savedCallback) {
-        $http.post('/Movies/UpdateMovie', getServerItem(movieItem)).then(function(response) {
-            if (savedCallback) {
-                savedCallback();
-            }
-        });
+    function updateMovie(movieItem) {
+        return $http.post('/Movies/UpdateMovie', getServerItem(movieItem));
     }
 
     function getMovie(id, callback) {
         var deferred = $q.defer();
         var idParam = id == null || id == undefined ? "" : id;
-        $http.get('/Movies/GetMovie?id=' + idParam).success(function(response) {
+        $http.get('/Movies/GetMovie?id=' + idParam).success(function (response) {
             deferred.resolve(parseItem(response));
         });
         return deferred.promise;
@@ -61,20 +55,20 @@
 
     function getServerField(field) {
         switch (field) {
-        case 'id':
-            return "Id";
-        case 'title':
-            return "Title";
-        case 'rating':
-            return "Rating";
-        case 'releaseYear':
-            return "ReleaseYear";
-        case 'classification':
-            return "Classification";
-        case 'genre':
-            return "Genre";
-        case 'cast':
-            return "Cast";
+            case 'id':
+                return "Id";
+            case 'title':
+                return "Title";
+            case 'rating':
+                return "Rating";
+            case 'releaseYear':
+                return "ReleaseYear";
+            case 'classification':
+                return "Classification";
+            case 'genre':
+                return "Genre";
+            case 'cast':
+                return "Cast";
         }
         return null;
     }
@@ -108,4 +102,4 @@
         getMovie: getMovie,
         updateMovie: updateMovie
     };
-}]);
+} ]);
