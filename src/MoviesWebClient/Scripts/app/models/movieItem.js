@@ -1,4 +1,4 @@
-﻿movies.models.movieItem = function (options) {
+﻿movies.models.movieItem = function(options) {
     if (options.hasOwnProperty('id')) {
         this.id = options.id;
     }
