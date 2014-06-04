@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using System.Linq;
 using MoviesLibrary;
 
 namespace Movies.DataContracts
@@ -32,6 +31,7 @@ namespace Movies.DataContracts
 
         [DataMember]
         public string CacheId { get; set; }
+
         [DataMember]
         public int Id { get; set; }
 
@@ -53,31 +53,33 @@ namespace Movies.DataContracts
         [DataMember]
         public string[] Cast { get; set; }
 
-        public bool IsNew() 
+        public bool IsNew()
         {
-            return this.Id == 0;
+            return Id == 0;
         }
 
         public override bool Equals(object obj)
         {
-            return this.Equals(obj as Movie);
+            return Equals(obj as Movie);
         }
 
-        public bool Equals(Movie obj) 
+        public bool Equals(Movie obj)
         {
-            if (obj == null) 
+            if (obj == null)
             {
                 return false;
             }
-            
-            return this.Id == obj.Id && this.Title == obj.Title && this.ReleaseYear == obj.ReleaseYear && this.Genre == obj.Genre && this.Rating == obj.Rating &&
-                this.Classification == obj.Classification;
+
+            return Id == obj.Id && Title == obj.Title && ReleaseYear == obj.ReleaseYear && Genre == obj.Genre &&
+                   Rating == obj.Rating &&
+                   Classification == obj.Classification;
         }
 
         public override int GetHashCode()
         {
-            return this.Id.GetHashCode() ^ this.Title.GetHashCode() ^ this.ReleaseYear.GetHashCode() ^ this.Genre.GetHashCode() ^ this.Rating.GetHashCode() ^
-                this.Classification.GetHashCode();
+            return Id.GetHashCode() ^ Title.GetHashCode() ^ ReleaseYear.GetHashCode() ^ Genre.GetHashCode() ^
+                   Rating.GetHashCode() ^
+                   Classification.GetHashCode();
         }
 
         public static implicit operator Movie(MovieData data)

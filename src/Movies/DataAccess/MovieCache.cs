@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Web;
 using System.Web.Caching;
 using Movies.DataContracts;
-using Movies.Interfaces;
-using System.ServiceModel;
 using Movies.DataContracts.FaultContracts;
+using Movies.Interfaces;
 
 namespace Movies.DataAccess
 {
@@ -16,7 +16,7 @@ namespace Movies.DataAccess
 
         private static readonly MovieCache _instance = new MovieCache(HttpContext.Current.Cache);
 
-        private readonly System.Web.Caching.Cache _cache;
+        private readonly Cache _cache;
         private readonly object _syncObject = new object();
 
         private MovieCache(Cache cache)
@@ -26,10 +26,7 @@ namespace Movies.DataAccess
 
         public static MovieCache Instance
         {
-            get
-            {
-                return _instance;
-            }
+            get { return _instance; }
         }
 
 
@@ -40,8 +37,8 @@ namespace Movies.DataAccess
 
         public IEnumerable<Movie> GetMovies()
         {
-			CheckInitialized("GetMovies operation failed. ");
-            
+            CheckInitialized("GetMovies operation failed. ");
+
             return _cache[_cacheKey] as List<Movie>;
         }
 
@@ -49,9 +46,9 @@ namespace Movies.DataAccess
         {
             lock (_syncObject)
             {
-                foreach (Movie m in list) 
+                foreach (Movie m in list)
                 {
-                    m.CacheId = this.GetElementId();
+                    m.CacheId = GetElementId();
                 }
                 _cache[_cacheKey] = new List<Movie>(list);
             }
@@ -62,8 +59,8 @@ namespace Movies.DataAccess
             lock (_syncObject)
             {
                 CheckInitialized("Add operation failed. ");
-                
-                movie.CacheId = this.GetElementId();
+
+                movie.CacheId = GetElementId();
                 List<Movie> movies = GetMovies().ToList();
                 movies.Add(movie);
                 PutMovies(movies);
@@ -75,7 +72,7 @@ namespace Movies.DataAccess
             lock (_syncObject)
             {
                 CheckInitialized("Update operation failed. ");
-                
+
                 IEnumerable<Movie> movies = GetMovies();
                 Movie cachedMovie = movies.First(m => m.CacheId == movie.CacheId);
 
@@ -93,19 +90,21 @@ namespace Movies.DataAccess
         public Movie GetMovieById(string id)
         {
             CheckInitialized("GetMovieById operation failed. ");
-            
+
             return GetMovies().FirstOrDefault(m => m.CacheId == id);
         }
 
-        private void CheckInitialized(string operation) 
+        private void CheckInitialized(string operation)
         {
             if (!IsInitialized)
             {
-                throw new FaultException<InitializationFault>(new InitializationFault(operation + "Cache is not initialized"));
+                throw new FaultException<InitializationFault>(
+                    new InitializationFault(operation + "Cache is not initialized"));
             }
         }
 
-        private string GetElementId() {
+        private string GetElementId()
+        {
             return Guid.NewGuid().ToString();
         }
     }

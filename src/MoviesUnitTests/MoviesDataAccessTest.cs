@@ -1,12 +1,11 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Movies.Interfaces;
-using Movies.DataAccess;
 using Moq;
+using Movies.DataAccess;
 using Movies.DataContracts;
+using Movies.Interfaces;
 using Movies.Models;
 
 namespace MoviesUnitTests
@@ -14,26 +13,64 @@ namespace MoviesUnitTests
     [TestClass]
     public class MoviesDataAccessTest
     {
+        private readonly Mock<IMovieCache> _movieCacheMock = new Mock<IMovieCache>();
         private IMoviesDataAccess _moviesDataAccess;
-        private Mock<IMovieCache> _movieCacheMock = new Mock<IMovieCache>();
 
         [TestInitialize]
         public void TestInit()
         {
-            Mock<IDataSourceAdapter> dataSourceAdapterMock = new Mock<IDataSourceAdapter>();
+            var dataSourceAdapterMock = new Mock<IDataSourceAdapter>();
 
-            dataSourceAdapterMock.Setup<List<Movie>>(d => d.GetAllMovies()).Returns(GetPredefinedMovies());
-            _moviesDataAccess = new MoviesDataAccess(_movieCacheMock.Object, dataSourceAdapterMock.Object, new Mock<ILogger>().Object);
+            dataSourceAdapterMock.Setup(d => d.GetAllMovies()).Returns(GetPredefinedMovies());
+            _moviesDataAccess = new MoviesDataAccess(_movieCacheMock.Object, dataSourceAdapterMock.Object,
+                                                     new Mock<ILogger>().Object);
         }
 
-        private List<Movie> GetPredefinedMovies() {
-            List<Movie> allMovies = new List<Movie>() 
-            {
-                new Movie() { Id = 1, Classification="M", Genre = "Action", Rating = 1, ReleaseYear=2014, Title="Movie1", Cast = new string[] { "A1", "A2" }  },
-                new Movie() { Id = 2, Classification="M1", Genre = "Comedy", Rating = 3, ReleaseYear=2010, Title="Movie2", Cast = new string[] { }  },
-                new Movie() { Id = 3, Classification="M2", Genre = "Cartoon", Rating = 3, ReleaseYear=2012, Title="Movie3", Cast = null },
-                new Movie() { Id = 4, Classification="M", Genre = "Action", Rating = 5, ReleaseYear=2014, Title="Movie4", Cast = new string[] { "A3", "A4" }  }
-            };
+        private List<Movie> GetPredefinedMovies()
+        {
+            var allMovies = new List<Movie>
+                                {
+                                    new Movie
+                                        {
+                                            Id = 1,
+                                            Classification = "M",
+                                            Genre = "Action",
+                                            Rating = 1,
+                                            ReleaseYear = 2014,
+                                            Title = "Movie1",
+                                            Cast = new[] {"A1", "A2"}
+                                        },
+                                    new Movie
+                                        {
+                                            Id = 2,
+                                            Classification = "M1",
+                                            Genre = "Comedy",
+                                            Rating = 3,
+                                            ReleaseYear = 2010,
+                                            Title = "Movie2",
+                                            Cast = new string[] {}
+                                        },
+                                    new Movie
+                                        {
+                                            Id = 3,
+                                            Classification = "M2",
+                                            Genre = "Cartoon",
+                                            Rating = 3,
+                                            ReleaseYear = 2012,
+                                            Title = "Movie3",
+                                            Cast = null
+                                        },
+                                    new Movie
+                                        {
+                                            Id = 4,
+                                            Classification = "M",
+                                            Genre = "Action",
+                                            Rating = 5,
+                                            ReleaseYear = 2014,
+                                            Title = "Movie4",
+                                            Cast = new[] {"A3", "A4"}
+                                        }
+                                };
             return allMovies;
         }
 
@@ -48,38 +85,66 @@ namespace MoviesUnitTests
 
         private void CheckPropertyValueInList<T>(string propertyName, T[] values, List<Movie> movie)
         {
-            System.Reflection.PropertyInfo propertyDescriptor = typeof(Movie).GetProperty(propertyName);
-            Assert.AreEqual(values[0], propertyDescriptor.GetValue(movie[0], new object[] { }));
-            Assert.AreEqual(values[1], propertyDescriptor.GetValue(movie[1], new object[] { }));
-            Assert.AreEqual(values[2], propertyDescriptor.GetValue(movie[2], new object[] { }));
-            Assert.AreEqual(values[3], propertyDescriptor.GetValue(movie[3], new object[] { }));
+            PropertyInfo propertyDescriptor = typeof (Movie).GetProperty(propertyName);
+            Assert.AreEqual(values[0], propertyDescriptor.GetValue(movie[0], new object[] {}));
+            Assert.AreEqual(values[1], propertyDescriptor.GetValue(movie[1], new object[] {}));
+            Assert.AreEqual(values[2], propertyDescriptor.GetValue(movie[2], new object[] {}));
+            Assert.AreEqual(values[3], propertyDescriptor.GetValue(movie[3], new object[] {}));
         }
 
         [TestMethod]
         public void GetAllMoviesReturnsAllMoviesFromCache()
         {
-            _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
+            _movieCacheMock.Setup(c => c.GetMovies()).Returns(GetPredefinedMovies());
             CheckAllPredefined(_moviesDataAccess.GetAllMovies().ToList());
         }
 
         [TestMethod]
-        public void AddMovieAddsNewMovieToCache() 
+        public void AddMovieAddsNewMovieToCache()
         {
-            _moviesDataAccess.AddMovie(new Movie() { Id = 5, Classification = "M", Genre = "Action", Rating = 1, ReleaseYear = 2014, Title = "Movie5", Cast = new string[] { "A3", "A4" } });
+            _moviesDataAccess.AddMovie(new Movie
+                                           {
+                                               Id = 5,
+                                               Classification = "M",
+                                               Genre = "Action",
+                                               Rating = 1,
+                                               ReleaseYear = 2014,
+                                               Title = "Movie5",
+                                               Cast = new[] {"A3", "A4"}
+                                           });
             _movieCacheMock.Verify(c => c.AddMovie(It.IsAny<Movie>()), Times.Once());
         }
 
         [TestMethod]
         public void UpdateMovieUpdatessNewMovieToCache()
         {
-            _moviesDataAccess.UpdateMovie(new Movie() { Id = 5, Classification = "M", Genre = "Action", Rating = 1, ReleaseYear = 2014, Title = "Movie5", Cast = new string[] { "A3", "A4" } });
+            _moviesDataAccess.UpdateMovie(new Movie
+                                              {
+                                                  Id = 5,
+                                                  Classification = "M",
+                                                  Genre = "Action",
+                                                  Rating = 1,
+                                                  ReleaseYear = 2014,
+                                                  Title = "Movie5",
+                                                  Cast = new[] {"A3", "A4"}
+                                              });
             _movieCacheMock.Verify(c => c.UpdateMovie(It.IsAny<Movie>()), Times.Once());
         }
-        
+
         [TestMethod]
-        public void GetMoiveByIdReturnsMovieFromCache() 
+        public void GetMoiveByIdReturnsMovieFromCache()
         {
-            _movieCacheMock.Setup<Movie>(c => c.GetMovieById("1")).Returns(new Movie() { Id = 5, Classification = "M", Genre = "Action", Rating = 1, ReleaseYear = 2014, Title = "Movie5", Cast = new string[] { "A3", "A4" } });
+            _movieCacheMock.Setup(c => c.GetMovieById("1"))
+                           .Returns(new Movie
+                                        {
+                                            Id = 5,
+                                            Classification = "M",
+                                            Genre = "Action",
+                                            Rating = 1,
+                                            ReleaseYear = 2014,
+                                            Title = "Movie5",
+                                            Cast = new[] {"A3", "A4"}
+                                        });
             Movie result = _moviesDataAccess.GetMovieById("1");
             Assert.AreEqual(5, result.Id);
             Assert.AreEqual("M", result.Classification);
@@ -90,9 +155,9 @@ namespace MoviesUnitTests
         }
 
         [TestMethod]
-        public void SearchNullOrEmptyFieldReturnAll() 
+        public void SearchNullOrEmptyFieldReturnAll()
         {
-            _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
+            _movieCacheMock.Setup(c => c.GetMovies()).Returns(GetPredefinedMovies());
             CheckAllPredefined(_moviesDataAccess.SearchMovies(null, "a").ToList());
             CheckAllPredefined(_moviesDataAccess.SearchMovies(string.Empty, "a").ToList());
         }
@@ -100,24 +165,24 @@ namespace MoviesUnitTests
         [TestMethod]
         public void SearchNullOrEmptyExpressionReturnAll()
         {
-            _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
+            _movieCacheMock.Setup(c => c.GetMovies()).Returns(GetPredefinedMovies());
             CheckAllPredefined(_moviesDataAccess.SearchMovies("a", null).ToList());
             CheckAllPredefined(_moviesDataAccess.SearchMovies("a", string.Empty).ToList());
         }
 
         [TestMethod]
-        public void SearchByIntReturnsExectValue() 
+        public void SearchByIntReturnsExectValue()
         {
-            _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
+            _movieCacheMock.Setup(c => c.GetMovies()).Returns(GetPredefinedMovies());
             Movie searchResult = _moviesDataAccess.SearchMovies("Id", "1").FirstOrDefault();
             Assert.IsNotNull(searchResult);
             Assert.AreEqual(1, searchResult.Id);
         }
 
         [TestMethod]
-        public void SearchByStringReturnsContaiedValue() 
+        public void SearchByStringReturnsContaiedValue()
         {
-            _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
+            _movieCacheMock.Setup(c => c.GetMovies()).Returns(GetPredefinedMovies());
             Movie searchResult = _moviesDataAccess.SearchMovies("Genre", "cart").FirstOrDefault();
             Assert.IsNotNull(searchResult);
             Assert.AreEqual(3, searchResult.Id);
@@ -125,9 +190,9 @@ namespace MoviesUnitTests
         }
 
         [TestMethod]
-        public void SearchByCastReturnsMoviesWithActor() 
+        public void SearchByCastReturnsMoviesWithActor()
         {
-            _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
+            _movieCacheMock.Setup(c => c.GetMovies()).Returns(GetPredefinedMovies());
             Movie searchResult = _moviesDataAccess.SearchMovies("Cast", "a1").FirstOrDefault();
             Assert.IsNotNull(searchResult);
             Assert.AreEqual(1, searchResult.Id);
@@ -138,50 +203,61 @@ namespace MoviesUnitTests
         [TestMethod]
         public void GetSortedByIdReturnsSortedLits()
         {
-            _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
-            CheckPropertyValueInList("Id", new int[] { 1, 2, 3, 4 }, _moviesDataAccess.GetAllMovies("Id", SortDirection.Asc).ToList());
-            CheckPropertyValueInList("Id", new int[] { 4, 3, 2, 1 }, _moviesDataAccess.GetAllMovies("Id", SortDirection.Desc).ToList());
-            
+            _movieCacheMock.Setup(c => c.GetMovies()).Returns(GetPredefinedMovies());
+            CheckPropertyValueInList("Id", new[] {1, 2, 3, 4},
+                                     _moviesDataAccess.GetAllMovies("Id", SortDirection.Asc).ToList());
+            CheckPropertyValueInList("Id", new[] {4, 3, 2, 1},
+                                     _moviesDataAccess.GetAllMovies("Id", SortDirection.Desc).ToList());
         }
 
         [TestMethod]
         public void GetSortedByTitleReturnsSortedLits()
         {
-            _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
-            CheckPropertyValueInList("Title", new string[] { "Movie1", "Movie2", "Movie3", "Movie4" }, _moviesDataAccess.GetAllMovies("Title", SortDirection.Asc).ToList());
-            CheckPropertyValueInList("Title", new string[] { "Movie4", "Movie3", "Movie2", "Movie1" }, _moviesDataAccess.GetAllMovies("Title", SortDirection.Desc).ToList());
+            _movieCacheMock.Setup(c => c.GetMovies()).Returns(GetPredefinedMovies());
+            CheckPropertyValueInList("Title", new[] {"Movie1", "Movie2", "Movie3", "Movie4"},
+                                     _moviesDataAccess.GetAllMovies("Title", SortDirection.Asc).ToList());
+            CheckPropertyValueInList("Title", new[] {"Movie4", "Movie3", "Movie2", "Movie1"},
+                                     _moviesDataAccess.GetAllMovies("Title", SortDirection.Desc).ToList());
         }
 
         [TestMethod]
         public void GetSortedByGenreReturnsSortedLits()
         {
-            _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
-            CheckPropertyValueInList("Genre", new string[] { "Action", "Action", "Cartoon", "Comedy" }, _moviesDataAccess.GetAllMovies("Genre", SortDirection.Asc).ToList());
-            CheckPropertyValueInList("Genre", new string[] { "Comedy", "Cartoon", "Action", "Action" }, _moviesDataAccess.GetAllMovies("Genre", SortDirection.Desc).ToList());
+            _movieCacheMock.Setup(c => c.GetMovies()).Returns(GetPredefinedMovies());
+            CheckPropertyValueInList("Genre", new[] {"Action", "Action", "Cartoon", "Comedy"},
+                                     _moviesDataAccess.GetAllMovies("Genre", SortDirection.Asc).ToList());
+            CheckPropertyValueInList("Genre", new[] {"Comedy", "Cartoon", "Action", "Action"},
+                                     _moviesDataAccess.GetAllMovies("Genre", SortDirection.Desc).ToList());
         }
 
         [TestMethod]
         public void GetSortedByClassificationReturnsSortedLits()
         {
-            _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
-            CheckPropertyValueInList("Classification", new string[] { "M", "M", "M1", "M2" }, _moviesDataAccess.GetAllMovies("Classification", SortDirection.Asc).ToList());
-            CheckPropertyValueInList("Classification", new string[] { "M2", "M1", "M", "M" }, _moviesDataAccess.GetAllMovies("Classification", SortDirection.Desc).ToList());
+            _movieCacheMock.Setup(c => c.GetMovies()).Returns(GetPredefinedMovies());
+            CheckPropertyValueInList("Classification", new[] {"M", "M", "M1", "M2"},
+                                     _moviesDataAccess.GetAllMovies("Classification", SortDirection.Asc).ToList());
+            CheckPropertyValueInList("Classification", new[] {"M2", "M1", "M", "M"},
+                                     _moviesDataAccess.GetAllMovies("Classification", SortDirection.Desc).ToList());
         }
 
         [TestMethod]
         public void GetSortedByRatingReturnsSortedLits()
         {
-            _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
-            CheckPropertyValueInList("Rating", new int[] { 1, 3, 3, 5 }, _moviesDataAccess.GetAllMovies("Rating", SortDirection.Asc).ToList());
-            CheckPropertyValueInList("Rating", new int[] { 5, 3, 3, 1 }, _moviesDataAccess.GetAllMovies("Rating", SortDirection.Desc).ToList());
+            _movieCacheMock.Setup(c => c.GetMovies()).Returns(GetPredefinedMovies());
+            CheckPropertyValueInList("Rating", new[] {1, 3, 3, 5},
+                                     _moviesDataAccess.GetAllMovies("Rating", SortDirection.Asc).ToList());
+            CheckPropertyValueInList("Rating", new[] {5, 3, 3, 1},
+                                     _moviesDataAccess.GetAllMovies("Rating", SortDirection.Desc).ToList());
         }
 
         [TestMethod]
         public void GetSortedByReleaseYearReturnsSortedLits()
         {
-            _movieCacheMock.Setup<IEnumerable<Movie>>(c => c.GetMovies()).Returns(GetPredefinedMovies());
-            CheckPropertyValueInList("ReleaseYear", new int[] { 2010, 2012, 2014, 2014 }, _moviesDataAccess.GetAllMovies("ReleaseYear", SortDirection.Asc).ToList());
-            CheckPropertyValueInList("ReleaseYear", new int[] { 2014, 2014, 2012, 2010 }, _moviesDataAccess.GetAllMovies("ReleaseYear", SortDirection.Desc).ToList());
+            _movieCacheMock.Setup(c => c.GetMovies()).Returns(GetPredefinedMovies());
+            CheckPropertyValueInList("ReleaseYear", new[] {2010, 2012, 2014, 2014},
+                                     _moviesDataAccess.GetAllMovies("ReleaseYear", SortDirection.Asc).ToList());
+            CheckPropertyValueInList("ReleaseYear", new[] {2014, 2014, 2012, 2010},
+                                     _moviesDataAccess.GetAllMovies("ReleaseYear", SortDirection.Desc).ToList());
         }
     }
 }

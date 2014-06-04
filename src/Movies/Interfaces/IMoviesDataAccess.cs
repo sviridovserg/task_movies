@@ -1,6 +1,6 @@
-﻿using Movies.DataContracts;
+﻿using System.Collections.Generic;
+using Movies.DataContracts;
 using Movies.Models;
-using System.Collections.Generic;
 
 namespace Movies.Interfaces
 {

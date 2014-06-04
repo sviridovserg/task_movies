@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Movies.Interfaces
+﻿namespace Movies.Interfaces
 {
-    interface IDataMerger
+    internal interface IDataMerger
     {
         void MergeCacheIntoDatsource();
     }

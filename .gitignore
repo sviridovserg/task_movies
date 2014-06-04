@@ -9,3 +9,7 @@ src/UpgradeLog.XML
 /src/MoviesWebClient/bin
 /src/MoviesWebClient/obj/Debug
 /src/TestResults
+src/Backup1/*
+src/MoviesWebClient/Content/themes/*
+src/MoviesWebClient/Content/themes/*
+src/MoviesWebClient/Content/themes/base/*

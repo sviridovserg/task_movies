@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Movies.Interfaces;
 using Movies.DataContracts;
+using Movies.Interfaces;
 
 namespace Movies.Utils
 {
-    public class DataMerger: IDataMerger
+    public class DataMerger : IDataMerger
     {
-        private IMovieCache _cache;
-        private IDataSourceAdapter _dataSource;
-        private ILogger _logger;
+        private readonly IMovieCache _cache;
+        private readonly IDataSourceAdapter _dataSource;
+        private readonly ILogger _logger;
 
-        public DataMerger(IMovieCache cache, IDataSourceAdapter dataSource, ILogger logger) 
+        public DataMerger(IMovieCache cache, IDataSourceAdapter dataSource, ILogger logger)
         {
             _cache = cache;
             _dataSource = dataSource;
             _logger = logger;
         }
 
-        public void MergeCacheIntoDatsource() 
+        public void MergeCacheIntoDatsource()
         {
             try
             {
@@ -30,15 +29,15 @@ namespace Movies.Utils
                 IEnumerable<Movie> addedMovies = cachedMovies.Where(m => m.IsNew());
                 IEnumerable<Movie> updatedMovies = cachedMovies.Where(m => !m.IsNew() && !dataSourceMovies.Contains(m));
 
-                foreach (var added in addedMovies) 
+                foreach (Movie added in addedMovies)
                 {
-					added.Id=_dataSource.Create(added);
+                    added.Id = _dataSource.Create(added);
                 }
-                foreach (var updated in updatedMovies) 
+                foreach (Movie updated in updatedMovies)
                 {
                     _dataSource.Update(updated);
                 }
-				_cache.PutMovies(cachedMovies);
+                _cache.PutMovies(cachedMovies);
             }
             catch (Exception ex)
             {

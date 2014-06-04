@@ -1,15 +1,15 @@
 ﻿<div>
     <div>
         <h3>Movies in Library</h3>
-        <div style="float:right">
+        <div style="float: right">
             <button type="submit" class="btn btn-info" ng-click="addMovie()" >Add Movie</button>
         </div>
     </div>
     <form class="form-search">
         <select   ng-model="searchField" ng-options="f.value for f in fields">
         </select>
-      <input type="text" class="input-medium search-query"  ng-model="searchVal"/>
-      <button type="submit" class="btn btn-success" ng-click="search(searchField, searchVal)" ng-disabled="!searchField || !searchVal">Search</button>
+        <input type="text" class="input-medium search-query"  ng-model="searchVal"/>
+        <button type="submit" class="btn btn-success" ng-click="search(searchField, searchVal)" ng-disabled="!searchField || !searchVal">Search</button>
     </form>
     <div>
         <table class="table table-hover">

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.ServiceModel;
 using System.Web.Mvc;
 using Movies;
-using System.ServiceModel;
+using Movies.DataContracts;
 
 namespace MoviesWebClient.Controllers
 {
@@ -19,7 +16,8 @@ namespace MoviesWebClient.Controllers
         }
 
         [Authorize]
-        public ActionResult AllMovies() {
+        public ActionResult AllMovies()
+        {
             return Json(GetMoviesService().GetList(null, null), JsonRequestBehavior.AllowGet);
         }
 
@@ -30,26 +28,27 @@ namespace MoviesWebClient.Controllers
         }
 
         [Authorize]
-        public ActionResult GetMovie(string id) 
+        public ActionResult GetMovie(string id)
         {
             return Json(GetMoviesService().GetMovie(id), JsonRequestBehavior.AllowGet);
         }
 
         [Authorize]
         [HttpPost]
-        public void UpdateMovie(Movies.DataContracts.Movie movie)
+        public void UpdateMovie(Movie movie)
         {
             GetMoviesService().UpdateMovie(movie);
         }
 
         [Authorize]
         [HttpPost]
-        public void AddMovie(Movies.DataContracts.Movie movie)
+        public void AddMovie(Movie movie)
         {
             GetMoviesService().AddMovie(movie);
         }
 
-        private IMoviesService GetMoviesService() {
+        private IMoviesService GetMoviesService()
+        {
             var channelFactory = new ChannelFactory<IMoviesService>("MoviesServiceEndpoint");
             return channelFactory.CreateChannel();
         }

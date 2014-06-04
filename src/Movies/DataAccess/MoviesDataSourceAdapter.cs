@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Movies.DataContracts;
 using Movies.Interfaces;
@@ -18,7 +17,7 @@ namespace Movies.DataAccess
 
         public int Create(Movie movie)
         {
-            return _dataSource.Create((MovieData)movie);
+            return _dataSource.Create((MovieData) movie);
         }
 
         public List<Movie> GetAllMovies()

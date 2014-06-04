@@ -31,9 +31,10 @@ namespace Movies.DataAccess
             }
             return result;
         }
+
         public IEnumerable<Movie> SearchMovies(string field, string expression)
         {
-			return _cache.GetMovies().Where(GetSearchPredicate(field, expression));
+            return _cache.GetMovies().Where(GetSearchPredicate(field, expression));
         }
 
         public void AddMovie(Movie movie)
@@ -55,13 +56,13 @@ namespace Movies.DataAccess
 
         private static Func<Movie, bool> GetSearchPredicate(string field, string expression)
         {
-			if (string.IsNullOrEmpty(field) || string.IsNullOrEmpty(expression))
-			{
-				return m => true;
-			}
+            if (string.IsNullOrEmpty(field) || string.IsNullOrEmpty(expression))
+            {
+                return m => true;
+            }
             Type movieType = typeof (Movie);
             PropertyInfo propertyDescriptor = movieType.GetProperty(field);
-            if (propertyDescriptor == null) 
+            if (propertyDescriptor == null)
             {
                 return m => true;
             }
@@ -83,12 +84,12 @@ namespace Movies.DataAccess
                            }
                            else if (propertyDescriptor.PropertyType == typeof (string))
                            {
-							   return propertyValue.ToString().ToUpper().Contains(expression.ToUpper());
+                               return propertyValue.ToString().ToUpper().Contains(expression.ToUpper());
                            }
                            else if (propertyDescriptor.PropertyType == typeof (string[]))
                            {
                                var arrayVal = propertyValue as string[];
-							   return arrayVal.FirstOrDefault(s => s.ToUpper().Contains(expression.ToUpper())) != null;
+                               return arrayVal.FirstOrDefault(s => s.ToUpper().Contains(expression.ToUpper())) != null;
                            }
                            return false;
                        };
