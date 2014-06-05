@@ -1,9 +1,7 @@
 ﻿<div>
     <div>
         <h3>Movies in Library</h3>
-        <div style="float: right">
-            <button type="submit" class="btn btn-info" ng-click="addMovie()" >Add Movie</button>
-        </div>
+        <button type="submit" class="btn btn-info pull-right" ng-click="addMovie()" >Add Movie</button>
     </div>
     <form class="form-search">
         <select   ng-model="searchField" ng-options="f.value for f in fields">
@@ -39,7 +37,7 @@
             <tbody>
                 <tr ng-repeat="m in movies | orderBy:sortField:asc">
                     <td>{{m.id}}</td>
-                    <td ><a href="" ng-click="editMovie(m)" >{{m.title}}</a></td>
+                    <td ><a href="" ng-click="editMovie(m)" class="a">{{m.title}}</a></td>
                     <td>{{m.releaseYear}}</td>
                     <td>{{m.rating}}</td>
                     <td>{{m.genre}}</td>
